@@ -59,13 +59,12 @@
   function statusOf(tree) {
     var rows = tree.rows;
     var dead = rows.some(function (r) { return r.note && r.note.indexOf("死亡") >= 0; });
-    var bare = rows.some(function (r) { return r.status && r.status.indexOf("无叶片") >= 0; });
     var bug = rows.some(function (r) { return (r.note && r.note.indexOf("虫害") >= 0) || (r.status && r.status.indexOf("虫害") >= 0); });
     var leaf = rows.some(function (r) { return r.status && r.status.indexOf("落叶") >= 0; });
     if (dead) return { key: "warn", text: "疑似死亡", detail: "9 月复查无叶片" };
     if (bug) return { key: "warn", text: "曾有虫害", detail: "5 月记录" };
-    if (leaf) return { key: "ok", text: "正常·落叶中", detail: "9 月开始落叶" };
-    return { key: "ok", text: "生长正常", detail: "" };
+    if (leaf) return { key: "ok", text: "曾记录落叶", detail: "9 月开始落叶" };
+    return { key: "ok", text: "暂无异常记录", detail: "" };
   }
   function levelClass(r) { return r === 1 ? "" : (r === 2 ? "b2" : "b0"); }
 
@@ -289,7 +288,7 @@
       "<h3>" + s.name + "</h3>" +
       '<p class="latin">' + s.latin + "</p>" +
       '<p class="fam">' + s.family + "</p>" +
-      '<div class="scard-foot"><span>' + s.count + " 株 · 最新" + s.measure + "均值 " + fmt(avg, 2) + " cm</span>" +
+      '<div class="scard-foot"><span>' + s.count + " 株 · 各株最近" + s.measure + "均值 " + fmt(avg, 2) + " cm</span>" +
       '<span class="go">查看</span></div>' +
       "</div></a>";
   }
@@ -303,7 +302,7 @@
       '<div class="rise">' +
       '<p class="eyebrow">Zhenmu Arboretum · Tree Archive</p>' +
       '<h1 class="hero-title">一树一码<span class="thin">珍木科研园 · 电子树牌</span></h1>' +
-      '<p class="hero-lede">华东师范大学闵行校区里种着 20 株珍稀树，2026 年 3 月 31 日种下。这里存着每一株的科属、来历、<em>为什么值得保护</em>，以及三轮实测的粗细与高矮。扫树牌上的码，看到的就是你面前这一株。</p>' +
+      '<p class="hero-lede">华东师范大学闵行校区里种着 20 株珍稀树，2026 年 3 月 31 日种下。这里存着每一株的科属、来历、<em>为什么值得保护</em>，以及历次实测的粗细与高矮。扫树牌上的码，看到的就是你面前这一株。</p>' +
       '<div class="hero-meta">' +
       '<div><b>' + D.meta.speciesCount + "</b><span>树种</span></div>" +
       '<div><b>' + D.meta.individualCount + "</b><span>株个体</span></div>" +
@@ -326,7 +325,7 @@
     html += '<section class="section"><div class="wrap"><div class="stats rise">' +
       "<div><b>5</b><span>树种：银缕梅、天目铁木、普陀鹅耳枥、舟山新木姜子、小果冬青</span></div>" +
       "<div><b>20</b><span>株个体，逐株编号建档</span></div>" +
-      "<div><b>3</b><span>轮实测：" + DATES.map(mmdd).join(" / ") + "</span></div>" +
+      "<div><b>" + D.meta.rounds + "</b><span>轮实测：" + DATES.map(mmdd).join(" / ") + "</span></div>" +
       "<div><b>4</b><span>项指标：径值、树高、冠幅、生长状况</span></div>" +
       "</div></div></section>";
 
@@ -335,7 +334,7 @@
       "<p>种源来自浙江天童森林生态系统国家野外科学观测研究站、浙江天目山森林生态系统国家野外科学观测研究站、自然资源部浙江舟山岛屿生态系统野外科学观测研究站，以及安徽天马国家级自然保护区。园区紧邻校园“生态岛”，既是野外台站的延伸样地，也是给中小学生看树的地方。</p>" +
       "<p>园子不大，20 株，一株一棵编号。难点不在种下去，而在种下去之后：这一年里哪一株缓过来了、哪一株被虫咬了、哪一株始终没发芽。这些问题只能靠一次一次去量来回答。</p>" +
       '<div class="quote">种下去只是开始。能不能活、长成什么样，要靠一年一年的记录来回答。</div>' +
-      "<p>于是有了这份档案，也有了树牌上的二维码。每一株的页面里都有它的三次实测数据，包括那些不太好看的读数。</p></div>" +
+      "<p>于是有了这份档案，也有了树牌上的二维码。每一株的页面里都有它的实测记录，包括那些不太好看的读数。</p></div>" +
       '<div class="photo-stack rise">' +
       '<figure><img src="assets/img/scene-open.jpg" alt="2026年3月31日珍木科研园揭牌"><figcaption>2026.03.31 揭牌</figcaption></figure>' +
       '<figure><img src="assets/img/scene-tour.jpg" alt="暑期营带队讲解"><figcaption>暑期营讲解</figcaption></figure>' +
@@ -345,7 +344,7 @@
     html += '<section class="qr-band"><div class="wrap">' +
       '<div class="rise"><p class="eyebrow">One Tree · One Code</p>' +
       "<h2>一株树，一个码</h2>" +
-      "<p>每株树挂一块牌，牌上印它自己的二维码。手机对着扫，直接进这一株的页面：编号、树种、三次读数、生长曲线，还有它这一轮的状态。</p>" +
+      "<p>每株树挂一块牌，牌上印它自己的二维码。手机对着扫，直接进这一株的页面：编号、树种、历次读数、生长曲线和现场记录。</p>" +
       "<p style='margin-bottom:22px'>二十个码可以一次打出来，A4 一页，剪开就能上牌。码里带的是本站地址，换页面内容不用重印。</p>" +
       '<a class="btn" href="#/qr">打开二维码打印页 →</a></div>' +
       '<div class="qr-demo rise" id="homeqr"><div class="cap">珍木科研园 · 树种名录</div></div>' +
@@ -353,15 +352,15 @@
 
     html += '<section class="section" id="notes"><div class="wrap">' +
       '<div class="section-head rise"><div><p class="num">贰</p><h2>数据怎么来的</h2>' +
-      "<p>页面上的每个数字都对应记录表里的一格。三轮读数、两种量法、几处需要说明的偏差，都写在这里。</p></div></div>" +
+      "<p>页面上的读数来自记录表。历次记录、两种量法、几处需要说明的偏差，都写在这里。</p></div></div>" +
       '<div class="notes">' +
       '<div class="note rise"><span class="tag">指标</span><h4>量什么，怎么量</h4>' +
       "<p>银缕梅与天目铁木已长到可量胸径，取离地 1.3 m 处直径；小果冬青、舟山新木姜子、普陀鹅耳枥苗还小，取地径。树高、冠幅以米计，冠幅记东西、南北两个读数，取平均。</p></div>" +
       '<div class="note rise"><span class="tag">轮次</span><h4>什么时候量的</h4>' +
-      "<p>前三轮由项目组逐株实测，固定在同一批树上。第四轮安排在 10 月下旬，数据尚未并入本页。</p>" +
-      '<div class="date-list">' + DATES.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "<span>第四轮 · 待并</span></div></div>" +
+      "<p>记录表共四轮，第四轮记录了 17 株；小果冬青三株没有第四轮记录，其最近数据仍为 9 月 18 日。</p>" +
+      '<div class="date-list">' + DATES.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</div></div>" +
       '<div class="note rise"><span class="tag">偏差</span><h4>三处要说明的读数</h4>' +
-      "<p>天目铁木 7 月 2 日的树高读到 5.4–6.7 m，与同期冠幅不相称，已列入复核；小果冬青三株 9 月 18 日复查均无叶片，记录为“疑似死亡”；部分个体径值在 5 月至 7 月间出现“缩小”，是三次卡尺位置不统一所致。为此制定了测量规范：固定位置并做标记、统一离地高度、同一人读数、误差控制在 ±0.1 cm。</p></div>" +
+      "<p>天目铁木 7 月 2 日的树高读到 5.4–6.7 m，与同期冠幅不相称，已列入复核；小果冬青三株 9 月 18 日复查均无叶片，记录为“疑似死亡”，第四轮未记录。部分个体径值出现“缩小”，可能与测量位置或误差有关，应结合后续复核判断。</p></div>" +
       "</div></div></section>";
 
     return html;
@@ -375,9 +374,11 @@
     if (f == null || l == null) return "";
     var diff = l - f;
     var word = diff >= 0 ? "增加" : "减少";
-    var txt = "截至 " + DATES[DATES.length - 1] + "，" + s.count + " 株的" + s.measure + "均值 " + fmt(l, 2) + " cm，比首测" + word + " " + fmt(Math.abs(diff), 2) + " cm。";
+    var dates = s.individuals.map(function (i) { return i.rows[i.rows.length - 1].date; }).sort();
+    var dateLabel = dates[0] === dates[dates.length - 1] ? dates[0] : dates[0] + " 至 " + dates[dates.length - 1];
+    var txt = s.count + " 株各自最近记录（" + dateLabel + "）的" + s.measure + "均值 " + fmt(l, 2) + " cm，比首测" + word + " " + fmt(Math.abs(diff), 2) + " cm。";
     if (diff < 0) {
-      txt += "径值不会真的变小，出现负值说明三次卡尺卡的位置不一样，这也是后来制定测量规范的原因。";
+      txt += "径值变化可能受到测量位置和误差影响，需结合后续复核判断。";
     }
     return txt;
   }
@@ -516,12 +517,16 @@
       "<em>" + (st.key === "warn" ? "读数待复核" : "净生长") + "</em></div>" +
       "</div>";
 
+    if (last.date !== DATES[DATES.length - 1]) {
+      html += '<p class="breadcrumb-note" style="margin-top:16px">最新一轮（' + DATES[DATES.length - 1] + "）无该株记录，下方显示的是此前的实测数据。</p>";
+    }
+
     if (st.key === "warn") {
       var notes = rows.filter(function (r) { return r.status || r.note; }).map(function (r) {
         return r.date + "：" + [r.status, r.note].filter(Boolean).join("，");
       });
       html += '<div class="risk-card rise" style="margin-top:16px"><h4>现场记录</h4><p>' + notes.join("；") +
-        "。这一株已列入重点观察名单，等第四轮复查确认。" + "</p></div>";
+        "。请结合后续现场复查判断。" + "</p></div>";
     }
 
     html += '<section class="section" style="padding-top:40px">' +
@@ -540,8 +545,8 @@
         else if (r.status) cls.push("ok");
         return "<tr><td>" + r.date + "</td>" +
           "<td>" + fmt(r.d, 3) + "</td>" +
-          '<td class="' + (r.h == null ? "muted" : "") + '">' + fmt(r.h, 2) + "</td>" +
-          '<td class="' + (r.cw == null ? "muted" : "") + '">' + fmt(r.cw, 2) + "</td>" +
+          '<td class="' + (r.h == null ? "muted" : "") + '">' + fmt(r.h, 3) + "</td>" +
+          '<td class="' + (r.cw == null ? "muted" : "") + '">' + fmt(r.cw, 3) + "</td>" +
           "<td>" + (r.status ? '<span class="chip ' + cls.join(" ") + '">' + r.status + "</span>" : '<span class="muted">—</span>') + "</td>" +
           "<td>" + (r.note ? '<span class="chip warn">' + r.note + "</span>" : '<span class="muted">—</span>') + "</td></tr>";
       }).join("") +
@@ -549,7 +554,7 @@
 
     html += '<p class="breadcrumb-note" style="margin-top:22px">' + s.measure + "的量取位置：" +
       (s.measure === "胸径" ? "离地 1.3 m 处树干直径" : "苗木基部地径，贴近地面处") +
-      "。第四轮监测已固定测量点并作标记，后续读数可直接与本次比较。</p>";
+      "。比较历次读数时，应注意测量位置及误差。</p>";
 
     html += '<div class="pager">' +
       (prev ? '<a href="#/tree/' + prev.id + '">← ' + prev.id + "</a>" : "<span></span>") +
@@ -589,7 +594,7 @@
       '<p class="eyebrow">Data Notes</p><h1 style="font-size:clamp(32px,4.4vw,52px)">数据说明</h1>' +
       '<p class="hero-lede">这份档案里的每个数字都来自同一张记录表。表里有多少格，这里就有多少数；表里没量到的，这里就写"未记"，不留空想。</p></div></header>';
     html += '<section class="section" style="padding-top:20px"><div class="wrap">' +
-      '<div class="tbl-wrap rise"><table class="data"><thead><tr><th>树种</th><th>株数</th><th>量取方式</th><th>首测均值</th><th>末测均值</th><th>净变化</th></tr></thead><tbody>' +
+      '<div class="tbl-wrap rise"><table class="data"><thead><tr><th>树种</th><th>株数</th><th>量取方式</th><th>首测均值</th><th>各株最近均值</th><th>净变化</th></tr></thead><tbody>' +
       D.species.map(function (s) {
         var f = mean(s.individuals.map(function (i) { return firstVal(i.rows, "d"); }));
         var l = mean(s.individuals.map(function (i) { return lastVal(i.rows, "d"); }));
@@ -598,7 +603,7 @@
           '<td style="color:' + (l - f >= 0 ? "var(--green-2)" : "var(--seal)") + '">' + (l - f >= 0 ? "+" : "") + fmt(l - f, 2) + " cm</td></tr>";
       }).join("") + "</tbody></table></div>";
     html += '<div class="notes" style="margin-top:26px">' +
-      '<div class="note rise"><span class="tag">来源</span><h4>记录表</h4><p>' + D.meta.source + "。共 " + D.meta.rounds + " 轮、20 株、60 条读数，本站直接读取该表生成，未做数值修匀。</p></div>" +
+      '<div class="note rise"><span class="tag">来源</span><h4>记录表</h4><p>' + D.meta.source + "。共 " + D.meta.rounds + " 轮、20 株、" + TREES.reduce(function (n, t) { return n + t.rows.length; }, 0) + " 条记录，数据来自该表，未做数值修匀。小果冬青三株没有第四轮记录，上表使用各株最近一次读数。</p></div>" +
       '<div class="note rise"><span class="tag">口径</span><h4>三项指标的读法</h4><p>径值单位厘米，保留三位小数，与卡尺读数一致；树高、冠幅单位米。冠幅两列读数取算术平均后显示。</p></div>' +
       '<div class="note rise"><span class="tag">说明</span><h4>看不懂的读数</h4><p>表里出现的"缩小"和异常高值都照原样保留，并在对应株的页面标注。数据不改，问题写清楚，下一轮再校正。</p></div>' +
       "</div></div></section>";
@@ -616,7 +621,7 @@
     html += '<section class="section" style="padding-top:26px"><div class="wrap">' +
       (isLocal() ? '<p class="breadcrumb-note" style="margin:0 0 18px;border-left-color:rgba(156,59,46,.5);color:var(--seal)">当前是本机打开的文件，二维码里还不会有真实地址。把站点放到公网后打开本页，码会自动按新域名生成。</p>' : "") +
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px" id="qgrid"></div>' +
-      '<p class="breadcrumb-note" style="margin-top:24px">扫码后进入的是这一株的页面，页面里能看到它的编号、树名、三次读数和生长曲线。若要改地址，只需改站点部署位置，二维码里的路径不变。</p>' +
+      '<p class="breadcrumb-note" style="margin-top:24px">扫码后进入的是这一株的页面，页面里能看到它的编号、树名、历次读数和生长曲线。若要改地址，只需改站点部署位置，二维码里的路径不变。</p>' +
       "</div></section>";
     return { html: html, after: function () {
       var grid = document.getElementById("qgrid");
